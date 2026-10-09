@@ -1,0 +1,35 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_5621
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=bea60dd7679364493a0d7f5b54316c767cf894ef
+ */
+
+static void send_ext_key_event_ack(VncState *vs)
+
+{
+
+    vnc_lock_output(vs);
+
+    vnc_write_u8(vs, VNC_MSG_SERVER_FRAMEBUFFER_UPDATE);
+
+    vnc_write_u8(vs, 0);
+
+    vnc_write_u16(vs, 1);
+
+    vnc_framebuffer_update(vs, 0, 0,
+
+                           surface_width(vs->vd->ds),
+
+                           surface_height(vs->vd->ds),
+
+                           VNC_ENCODING_EXT_KEY_EVENT);
+
+    vnc_unlock_output(vs);
+
+    vnc_flush(vs);
+
+}

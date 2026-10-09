@@ -1,0 +1,69 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_645
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=4be746345f13e99e468c60acbd3a355e8183e3ce
+ */
+
+struct omap_mmc_s *omap2_mmc_init(struct omap_target_agent_s *ta,
+
+                BlockDriverState *bd, qemu_irq irq, qemu_irq dma[],
+
+                omap_clk fclk, omap_clk iclk)
+
+{
+
+    struct omap_mmc_s *s = (struct omap_mmc_s *)
+
+            g_malloc0(sizeof(struct omap_mmc_s));
+
+
+
+    s->irq = irq;
+
+    s->dma = dma;
+
+    s->clk = fclk;
+
+    s->lines = 4;
+
+    s->rev = 2;
+
+
+
+    omap_mmc_reset(s);
+
+
+
+    memory_region_init_io(&s->iomem, NULL, &omap_mmc_ops, s, "omap.mmc",
+
+                          omap_l4_region_size(ta, 0));
+
+    omap_l4_attach(ta, 0, &s->iomem);
+
+
+
+    /* Instantiate the storage */
+
+    s->card = sd_init(bd, false);
+
+    if (s->card == NULL) {
+
+        exit(1);
+
+    }
+
+
+
+    s->cdet = qemu_allocate_irq(omap_mmc_cover_cb, s, 0);
+
+    sd_set_cb(s->card, NULL, s->cdet);
+
+
+
+    return s;
+
+}

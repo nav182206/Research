@@ -1,0 +1,29 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_2440
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=b4800b8b7dfba22117d8edd02164b00c83ae3753
+ */
+
+static int mxf_add_metadata_set(MXFContext *mxf, void *metadata_set)
+
+{
+
+
+
+    mxf->metadata_sets = av_realloc(mxf->metadata_sets, (mxf->metadata_sets_count + 1) * sizeof(*mxf->metadata_sets));
+
+    if (!mxf->metadata_sets)
+
+        return -1;
+
+    mxf->metadata_sets[mxf->metadata_sets_count] = metadata_set;
+
+    mxf->metadata_sets_count++;
+
+    return 0;
+
+}

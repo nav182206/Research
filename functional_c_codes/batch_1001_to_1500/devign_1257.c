@@ -1,0 +1,23 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_1257
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=9a78eead0c74333a394c0f7bbfc4423ac746fcd5
+ */
+
+void sh4_cpu_list(FILE *f, int (*cpu_fprintf)(FILE *f, const char *fmt, ...))
+
+{
+
+    int i;
+
+
+
+    for (i = 0; i < ARRAY_SIZE(sh4_defs); i++)
+
+	(*cpu_fprintf)(f, "%s\n", sh4_defs[i].name);
+
+}

@@ -1,0 +1,79 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_8258
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=03cef34aa66662e2ab3681d290e7c5a6634f4058
+ */
+
+int qsv_init(AVCodecContext *s)
+
+{
+
+    InputStream *ist = s->opaque;
+
+    QSVContext  *qsv = ist->hwaccel_ctx;
+
+    AVQSVContext *hwctx_dec;
+
+    int ret;
+
+
+
+    if (!qsv) {
+
+        av_log(NULL, AV_LOG_ERROR, "QSV transcoding is not initialized. "
+
+               "-hwaccel qsv should only be used for one-to-one QSV transcoding "
+
+               "with no filters.\n");
+
+        return AVERROR_BUG;
+
+    }
+
+
+
+    ret = init_opaque_surf(qsv);
+
+    if (ret < 0)
+
+        return ret;
+
+
+
+    hwctx_dec = av_qsv_alloc_context();
+
+    if (!hwctx_dec)
+
+        return AVERROR(ENOMEM);
+
+
+
+    hwctx_dec->session        = qsv->session;
+
+    hwctx_dec->iopattern      = MFX_IOPATTERN_OUT_OPAQUE_MEMORY;
+
+    hwctx_dec->ext_buffers    = qsv->ext_buffers;
+
+    hwctx_dec->nb_ext_buffers = FF_ARRAY_ELEMS(qsv->ext_buffers);
+
+
+
+    av_freep(&s->hwaccel_context);
+
+    s->hwaccel_context = hwctx_dec;
+
+
+
+    ist->hwaccel_get_buffer = qsv_get_buffer;
+
+    ist->hwaccel_uninit     = qsv_uninit;
+
+
+
+    return 0;
+
+}

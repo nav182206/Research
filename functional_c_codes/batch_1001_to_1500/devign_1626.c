@@ -1,0 +1,51 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_1626
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=c2b38b277a7882a592f4f2ec955084b2b756daaa
+ */
+
+static bool run_poll_handlers(AioContext *ctx, int64_t max_ns)
+
+{
+
+    bool progress;
+
+    int64_t end_time;
+
+
+
+    assert(ctx->notify_me);
+
+    assert(qemu_lockcnt_count(&ctx->list_lock) > 0);
+
+    assert(ctx->poll_disable_cnt == 0);
+
+
+
+    trace_run_poll_handlers_begin(ctx, max_ns);
+
+
+
+    end_time = qemu_clock_get_ns(QEMU_CLOCK_REALTIME) + max_ns;
+
+
+
+    do {
+
+        progress = run_poll_handlers_once(ctx);
+
+    } while (!progress && qemu_clock_get_ns(QEMU_CLOCK_REALTIME) < end_time);
+
+
+
+    trace_run_poll_handlers_end(ctx, progress);
+
+
+
+    return progress;
+
+}

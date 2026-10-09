@@ -1,0 +1,33 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_4442
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=f4b147f6701f6f5127b70b82f41757a52dfa4aae
+ */
+
+static unsigned int dec_addi_acr(DisasContext *dc)
+
+{
+
+	TCGv t0;
+
+	DIS(fprintf (logfile, "addi.%c $r%u, $r%u, $acr\n",
+
+		  memsize_char(memsize_zz(dc)), dc->op2, dc->op1));
+
+	cris_cc_mask(dc, 0);
+
+	t0 = tcg_temp_new(TCG_TYPE_TL);
+
+	tcg_gen_shl_tl(t0, cpu_R[dc->op2], tcg_const_tl(dc->zzsize));
+
+	tcg_gen_add_tl(cpu_R[R_ACR], cpu_R[dc->op1], t0);
+
+
+
+	return 2;
+
+}

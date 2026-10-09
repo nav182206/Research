@@ -1,0 +1,105 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_783
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=7ebdffc353f3f0827864e8e3461fdc00cc243b14
+ */
+
+static int dxv_decompress_dxt1(AVCodecContext *avctx)
+
+{
+
+    DXVContext *ctx = avctx->priv_data;
+
+    GetByteContext *gbc = &ctx->gbc;
+
+    uint32_t value, prev, op;
+
+    int idx = 0, state = 0;
+
+    int pos = 2;
+
+
+
+    /* Copy the first two elements */
+
+    AV_WL32(ctx->tex_data, bytestream2_get_le32(gbc));
+
+    AV_WL32(ctx->tex_data + 4, bytestream2_get_le32(gbc));
+
+
+
+    /* Process input until the whole texture has been filled */
+
+    while (pos < ctx->tex_size / 4) {
+
+        CHECKPOINT(2);
+
+
+
+        /* Copy two elements from a previous offset or from the input buffer */
+
+        if (op) {
+
+            prev = AV_RL32(ctx->tex_data + 4 * (pos - idx));
+
+            AV_WL32(ctx->tex_data + 4 * pos, prev);
+
+            pos++;
+
+
+
+            prev = AV_RL32(ctx->tex_data + 4 * (pos - idx));
+
+            AV_WL32(ctx->tex_data + 4 * pos, prev);
+
+            pos++;
+
+        } else {
+
+            CHECKPOINT(2);
+
+
+
+            if (op)
+
+                prev = AV_RL32(ctx->tex_data + 4 * (pos - idx));
+
+            else
+
+                prev = bytestream2_get_le32(gbc);
+
+            AV_WL32(ctx->tex_data + 4 * pos, prev);
+
+            pos++;
+
+
+
+            CHECKPOINT(2);
+
+
+
+            if (op)
+
+                prev = AV_RL32(ctx->tex_data + 4 * (pos - idx));
+
+            else
+
+                prev = bytestream2_get_le32(gbc);
+
+            AV_WL32(ctx->tex_data + 4 * pos, prev);
+
+            pos++;
+
+        }
+
+    }
+
+
+
+    return 0;
+
+}

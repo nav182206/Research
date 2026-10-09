@@ -1,0 +1,73 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_8996
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=0b940c95b2171cb1035c79b85492f5f6cdb060a6
+ */
+
+static av_cold int decimate_init(AVFilterContext *ctx)
+
+{
+
+    DecimateContext *dm = ctx->priv;
+
+    AVFilterPad pad = {
+
+        .name         = av_strdup("main"),
+
+        .type         = AVMEDIA_TYPE_VIDEO,
+
+        .filter_frame = filter_frame,
+
+        .config_props = config_input,
+
+    };
+
+
+
+    if (!pad.name)
+
+        return AVERROR(ENOMEM);
+
+    ff_insert_inpad(ctx, INPUT_MAIN, &pad);
+
+
+
+    if (dm->ppsrc) {
+
+        pad.name = av_strdup("clean_src");
+
+        pad.config_props = NULL;
+
+        if (!pad.name)
+
+            return AVERROR(ENOMEM);
+
+        ff_insert_inpad(ctx, INPUT_CLEANSRC, &pad);
+
+    }
+
+
+
+    if ((dm->blockx & (dm->blockx - 1)) ||
+
+        (dm->blocky & (dm->blocky - 1))) {
+
+        av_log(ctx, AV_LOG_ERROR, "blockx and blocky settings must be power of two\n");
+
+        return AVERROR(EINVAL);
+
+    }
+
+
+
+    dm->start_pts = AV_NOPTS_VALUE;
+
+
+
+    return 0;
+
+}

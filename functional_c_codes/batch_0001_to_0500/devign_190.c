@@ -1,0 +1,41 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_190
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=4fa4ce7107c6ec432f185307158c5df91ce54308
+ */
+
+static int local_create_mapped_attr_dir(FsContext *ctx, const char *path)
+
+{
+
+    int err;
+
+    char attr_dir[PATH_MAX];
+
+    char *tmp_path = g_strdup(path);
+
+
+
+    snprintf(attr_dir, PATH_MAX, "%s/%s/%s",
+
+             ctx->fs_root, dirname(tmp_path), VIRTFS_META_DIR);
+
+
+
+    err = mkdir(attr_dir, 0700);
+
+    if (err < 0 && errno == EEXIST) {
+
+        err = 0;
+
+    }
+
+    g_free(tmp_path);
+
+    return err;
+
+}

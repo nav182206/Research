@@ -1,0 +1,29 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_5333
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=fa2a34cd40d124161c748bb0f430dc63c94dd0da
+ */
+
+AVFilter *avfilter_get_by_name(const char *name)
+
+{
+
+    int i;
+
+
+
+    for (i = 0; registered_avfilters[i]; i++)
+
+        if (!strcmp(registered_avfilters[i]->name, name))
+
+            return registered_avfilters[i];
+
+
+
+    return NULL;
+
+}

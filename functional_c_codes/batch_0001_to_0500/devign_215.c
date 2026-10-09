@@ -1,0 +1,41 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_215
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=7f526efd17973ec6d2204f7a47b6923e2be31363
+ */
+
+void rgb15tobgr32(const uint8_t *src, uint8_t *dst, unsigned int src_size)
+
+{
+
+	const uint16_t *end;
+
+	uint8_t *d = (uint8_t *)dst;
+
+	const uint16_t *s = (const uint16_t *)src;
+
+	end = s + src_size/2;
+
+	while(s < end)
+
+	{
+
+		register uint16_t bgr;
+
+		bgr = *s++;
+
+		*d++ = (bgr&0x7C00)>>7;
+
+		*d++ = (bgr&0x3E0)>>2;
+
+		*d++ = (bgr&0x1F)<<3;
+
+		*d++ = 0;
+
+	}
+
+}

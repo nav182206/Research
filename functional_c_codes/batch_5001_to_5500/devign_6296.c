@@ -1,0 +1,39 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_6296
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=51b19ebe4320f3dcd93cea71235c1219318ddfd2
+ */
+
+void virtio_init_iov_from_pdu(V9fsPDU *pdu, struct iovec **piov,
+
+                              unsigned int *pniov, bool is_write)
+
+{
+
+    V9fsState *s = pdu->s;
+
+    V9fsVirtioState *v = container_of(s, V9fsVirtioState, state);
+
+    VirtQueueElement *elem = &v->elems[pdu->idx];
+
+
+
+    if (is_write) {
+
+        *piov = elem->out_sg;
+
+        *pniov = elem->out_num;
+
+    } else {
+
+        *piov = elem->in_sg;
+
+        *pniov = elem->in_num;
+
+    }
+
+}

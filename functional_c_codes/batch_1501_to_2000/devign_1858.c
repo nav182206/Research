@@ -1,0 +1,65 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_1858
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=6886867e9880830d735d8ae6f6cc63ed9eb2be0c
+ */
+
+void stl_phys_notdirty(AddressSpace *as, hwaddr addr, uint32_t val)
+
+{
+
+    uint8_t *ptr;
+
+    MemoryRegion *mr;
+
+    hwaddr l = 4;
+
+    hwaddr addr1;
+
+
+
+    mr = address_space_translate(as, addr, &addr1, &l,
+
+                                 true);
+
+    if (l < 4 || !memory_access_is_direct(mr, true)) {
+
+        io_mem_write(mr, addr1, val, 4);
+
+    } else {
+
+        addr1 += memory_region_get_ram_addr(mr) & TARGET_PAGE_MASK;
+
+        ptr = qemu_get_ram_ptr(addr1);
+
+        stl_p(ptr, val);
+
+
+
+        if (unlikely(in_migration)) {
+
+            if (cpu_physical_memory_is_clean(addr1)) {
+
+                /* invalidate code */
+
+                tb_invalidate_phys_page_range(addr1, addr1 + 4, 0);
+
+                /* set dirty bit */
+
+                cpu_physical_memory_set_dirty_flag(addr1,
+
+                                                   DIRTY_MEMORY_MIGRATION);
+
+                cpu_physical_memory_set_dirty_flag(addr1, DIRTY_MEMORY_VGA);
+
+            }
+
+        }
+
+    }
+
+}

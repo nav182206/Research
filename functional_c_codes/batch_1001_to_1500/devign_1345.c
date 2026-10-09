@@ -1,0 +1,67 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_1345
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=ebee92b4fef9defa19a8c348ec8b2716732ad4df
+ */
+
+static int print_block_option_help(const char *filename, const char *fmt)
+
+{
+
+    BlockDriver *drv, *proto_drv;
+
+    QEMUOptionParameter *create_options = NULL;
+
+
+
+    /* Find driver and parse its options */
+
+    drv = bdrv_find_format(fmt);
+
+    if (!drv) {
+
+        error_report("Unknown file format '%s'", fmt);
+
+        return 1;
+
+    }
+
+
+
+    create_options = append_option_parameters(create_options,
+
+                                              drv->create_options);
+
+
+
+    if (filename) {
+
+        proto_drv = bdrv_find_protocol(filename, true);
+
+        if (!proto_drv) {
+
+            error_report("Unknown protocol '%s'", filename);
+
+
+            return 1;
+
+        }
+
+        create_options = append_option_parameters(create_options,
+
+                                                  proto_drv->create_options);
+
+    }
+
+
+
+    print_option_help(create_options);
+
+
+    return 0;
+
+}

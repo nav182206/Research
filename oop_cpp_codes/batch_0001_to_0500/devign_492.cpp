@@ -1,0 +1,49 @@
+/* 
+ * Paradigm            : OOP_Cpp
+ * Benchmark Sample ID : devign_492
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=55e1819c509b3d9c10a54678b9c585bbda13889e
+ */
+
+static void qdict_destroy_obj(QObject *obj)
+
+{
+
+    int i;
+
+    QDict *qdict;
+
+
+
+    assert(obj != NULL);
+
+    qdict = qobject_to_qdict(obj);
+
+
+
+    for (i = 0; i < QDICT_BUCKET_MAX; i++) {
+
+        QDictEntry *entry = QLIST_FIRST(&qdict->table[i]);
+
+        while (entry) {
+
+            QDictEntry *tmp = QLIST_NEXT(entry, next);
+
+            QLIST_REMOVE(entry, next);
+
+            qentry_destroy(entry);
+
+            entry = tmp;
+
+        }
+
+    }
+
+
+
+    g_free(qdict);
+
+}

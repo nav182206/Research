@@ -1,0 +1,45 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_8386
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=4dec101acc393fbfe9a8ce0237b9efbae3f20139
+ */
+
+static int dxva2_vc1_start_frame(AVCodecContext *avctx,
+
+                                 av_unused const uint8_t *buffer,
+
+                                 av_unused uint32_t size)
+
+{
+
+    const VC1Context *v = avctx->priv_data;
+
+    AVDXVAContext *ctx = avctx->hwaccel_context;
+
+    struct dxva2_picture_context *ctx_pic = v->s.current_picture_ptr->hwaccel_picture_private;
+
+
+
+    if (!DXVA_CONTEXT_VALID(avctx, ctx))
+
+        return -1;
+
+    assert(ctx_pic);
+
+
+
+    fill_picture_parameters(avctx, ctx, v, &ctx_pic->pp);
+
+
+
+    ctx_pic->bitstream_size = 0;
+
+    ctx_pic->bitstream      = NULL;
+
+    return 0;
+
+}

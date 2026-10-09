@@ -1,0 +1,65 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_408
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=2d1a35bef0ed96b3f23535e459c552414ccdbafd
+ */
+
+static void *vring_map(MemoryRegion **mr, hwaddr phys, hwaddr len,
+
+                       bool is_write)
+
+{
+
+    MemoryRegionSection section = memory_region_find(get_system_memory(), phys, len);
+
+
+
+    if (!section.mr || int128_get64(section.size) < len) {
+
+        goto out;
+
+    }
+
+    if (is_write && section.readonly) {
+
+        goto out;
+
+    }
+
+    if (!memory_region_is_ram(section.mr)) {
+
+        goto out;
+
+    }
+
+
+
+    /* Ignore regions with dirty logging, we cannot mark them dirty */
+
+    if (memory_region_is_logging(section.mr)) {
+
+        goto out;
+
+    }
+
+
+
+    *mr = section.mr;
+
+    return memory_region_get_ram_ptr(section.mr) + section.offset_within_region;
+
+
+
+out:
+
+    memory_region_unref(section.mr);
+
+    *mr = NULL;
+
+    return NULL;
+
+}

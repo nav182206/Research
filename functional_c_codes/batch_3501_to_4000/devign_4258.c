@@ -1,0 +1,47 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_4258
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=68f593b48433842f3407586679fe07f3e5199ab9
+ */
+
+static void seek_to_maindata(MPADecodeContext *s, long backstep)
+
+{
+
+    UINT8 *ptr;
+
+
+
+    /* compute current position in stream */
+
+    ptr = s->gb.buffer + (get_bits_count(&s->gb)>>3);
+
+
+
+    /* copy old data before current one */
+
+    ptr -= backstep;
+
+    memcpy(ptr, s->inbuf1[s->inbuf_index ^ 1] + 
+
+           BACKSTEP_SIZE + s->old_frame_size - backstep, backstep);
+
+    /* init get bits again */
+
+    init_get_bits(&s->gb, ptr, s->frame_size + backstep);
+
+
+
+    /* prepare next buffer */
+
+    s->inbuf_index ^= 1;
+
+    s->inbuf = &s->inbuf1[s->inbuf_index][BACKSTEP_SIZE];
+
+    s->old_frame_size = s->frame_size;
+
+}

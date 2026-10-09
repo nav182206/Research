@@ -1,0 +1,47 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_6325
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=b09ea7d55cfab5a75912bb56ed1fcd757604a759
+ */
+
+static void apic_reset(void *opaque)
+
+{
+
+    APICState *s = opaque;
+
+    int bsp = cpu_is_bsp(s->cpu_env);
+
+
+
+    s->apicbase = 0xfee00000 |
+
+        (bsp ? MSR_IA32_APICBASE_BSP : 0) | MSR_IA32_APICBASE_ENABLE;
+
+
+
+    apic_init_ipi(s);
+
+
+
+    if (bsp) {
+
+        /*
+
+         * LINT0 delivery mode on CPU #0 is set to ExtInt at initialization
+
+         * time typically by BIOS, so PIC interrupt can be delivered to the
+
+         * processor when local APIC is enabled.
+
+         */
+
+        s->lvt[APIC_LVT_LINT0] = 0x700;
+
+    }
+
+}

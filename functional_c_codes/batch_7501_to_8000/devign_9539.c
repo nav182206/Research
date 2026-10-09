@@ -1,0 +1,59 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_9539
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=7fd5aeb3e57389198681a8ab2d5cd5d83a0c5a5f
+ */
+
+static int mp3_read_header(AVFormatContext *s,
+
+                           AVFormatParameters *ap)
+
+{
+
+    AVStream *st;
+
+    int64_t off;
+
+
+
+    st = av_new_stream(s, 0);
+
+    if (!st)
+
+        return AVERROR(ENOMEM);
+
+
+
+    st->codec->codec_type = CODEC_TYPE_AUDIO;
+
+    st->codec->codec_id = CODEC_ID_MP3;
+
+    st->need_parsing = AVSTREAM_PARSE_FULL;
+
+    st->start_time = 0;
+
+
+
+    ff_id3v1_read(s);
+
+    ff_id3v2_read(s);
+
+
+
+    off = url_ftell(s->pb);
+
+    if (mp3_parse_vbr_tags(s, st, off) < 0)
+
+        url_fseek(s->pb, off, SEEK_SET);
+
+
+
+    /* the parameters will be extracted from the compressed bitstream */
+
+    return 0;
+
+}

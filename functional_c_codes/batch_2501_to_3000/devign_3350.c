@@ -1,0 +1,47 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_3350
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=f755dea79dc81b0d6a8f6414e0672e165e28d8ba
+ */
+
+void visit_type_uint32(Visitor *v, uint32_t *obj, const char *name, Error **errp)
+
+{
+
+    int64_t value;
+
+
+
+    if (v->type_uint32) {
+
+        v->type_uint32(v, obj, name, errp);
+
+    } else {
+
+        value = *obj;
+
+        v->type_int64(v, &value, name, errp);
+
+        if (value < 0 || value > UINT32_MAX) {
+
+            /* FIXME questionable reuse of errp if callback changed
+
+               value on error */
+
+            error_setg(errp, QERR_INVALID_PARAMETER_VALUE,
+
+                       name ? name : "null", "uint32_t");
+
+            return;
+
+        }
+
+        *obj = value;
+
+    }
+
+}

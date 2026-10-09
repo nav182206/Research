@@ -1,0 +1,47 @@
+/* 
+ * Paradigm            : OOP_Cpp
+ * Benchmark Sample ID : devign_1734
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=5839e53bbc0fec56021d758aab7610df421ed8c8
+ */
+
+BlockDirtyInfoList *bdrv_query_dirty_bitmaps(BlockDriverState *bs)
+
+{
+
+    BdrvDirtyBitmap *bm;
+
+    BlockDirtyInfoList *list = NULL;
+
+    BlockDirtyInfoList **plist = &list;
+
+
+
+    QLIST_FOREACH(bm, &bs->dirty_bitmaps, list) {
+
+        BlockDirtyInfo *info = g_malloc0(sizeof(BlockDirtyInfo));
+
+        BlockDirtyInfoList *entry = g_malloc0(sizeof(BlockDirtyInfoList));
+
+        info->count = bdrv_get_dirty_count(bs, bm);
+
+        info->granularity =
+
+            ((int64_t) BDRV_SECTOR_SIZE << hbitmap_granularity(bm->bitmap));
+
+        entry->value = info;
+
+        *plist = entry;
+
+        plist = &entry->next;
+
+    }
+
+
+
+    return list;
+
+}

@@ -1,0 +1,49 @@
+/* 
+ * Paradigm            : Functional_C
+ * Benchmark Sample ID : devign_2807
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=4c7b023d56e09a78a587d036db1b64bf7c493b3d
+ */
+
+static int nvdec_vc1_decode_slice(AVCodecContext *avctx, const uint8_t *buffer, uint32_t size)
+
+{
+
+    NVDECContext *ctx = avctx->internal->hwaccel_priv_data;
+
+    void *tmp;
+
+
+
+    tmp = av_fast_realloc(ctx->slice_offsets, &ctx->slice_offsets_allocated,
+
+                          (ctx->nb_slices + 1) * sizeof(*ctx->slice_offsets));
+
+    if (!tmp)
+
+        return AVERROR(ENOMEM);
+
+    ctx->slice_offsets = tmp;
+
+
+
+    if (!ctx->bitstream)
+
+        ctx->bitstream = (uint8_t*)buffer;
+
+
+
+    ctx->slice_offsets[ctx->nb_slices] = buffer - ctx->bitstream;
+
+    ctx->bitstream_len += size;
+
+    ctx->nb_slices++;
+
+
+
+    return 0;
+
+}
