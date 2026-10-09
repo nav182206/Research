@@ -1,0 +1,31 @@
+/* 
+ * Benchmark Sample ID : devign_7947
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=56ad3e54dad6cdcee8668d170df161d89581846f
+ */
+
+ssize_t pt_getxattr(FsContext *ctx, const char *path, const char *name,
+
+                    void *value, size_t size)
+
+{
+
+    char *buffer;
+
+    ssize_t ret;
+
+
+
+    buffer = rpath(ctx, path);
+
+    ret = lgetxattr(buffer, name, value, size);
+
+    g_free(buffer);
+
+    return ret;
+
+}

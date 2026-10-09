@@ -1,0 +1,19 @@
+/* 
+ * Benchmark Sample ID : devign_8083
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=188d857911636fa43628eb8a7beeab4702636317
+ */
+
+static inline unsigned int rgb_to_pixel8(unsigned int r, unsigned int g, unsigned b)
+
+{
+
+    /* XXX: TODO */
+
+    return 0;
+
+}

@@ -1,0 +1,45 @@
+/* 
+ * Benchmark Sample ID : devign_9973
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=8297be80f7cf71e09617669a8bd8b2836dcfd4c3
+ */
+
+static void report_unavailable_features(FeatureWord w, uint32_t mask)
+
+{
+
+    FeatureWordInfo *f = &feature_word_info[w];
+
+    int i;
+
+
+
+    for (i = 0; i < 32; ++i) {
+
+        if ((1UL << i) & mask) {
+
+            const char *reg = get_register_name_32(f->cpuid_reg);
+
+            assert(reg);
+
+            fprintf(stderr, "warning: %s doesn't support requested feature: "
+
+                "CPUID.%02XH:%s%s%s [bit %d]\n",
+
+                kvm_enabled() ? "host" : "TCG",
+
+                f->cpuid_eax, reg,
+
+                f->feat_names[i] ? "." : "",
+
+                f->feat_names[i] ? f->feat_names[i] : "", i);
+
+        }
+
+    }
+
+}

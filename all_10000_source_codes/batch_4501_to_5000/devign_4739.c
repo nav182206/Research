@@ -1,0 +1,17 @@
+/* 
+ * Benchmark Sample ID : devign_4739
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=2374e73edafff0586cbfb67c333c5a7588f81fd5
+ */
+
+void helper_ldq_kernel(uint64_t t0, uint64_t t1)
+
+{
+
+    ldq_kernel(t1, t0);
+
+}

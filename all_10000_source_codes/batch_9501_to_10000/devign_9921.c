@@ -1,0 +1,23 @@
+/* 
+ * Benchmark Sample ID : devign_9921
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=a7812ae412311d7d47f8aa85656faadac9d64b56
+ */
+
+static always_inline void gen_qemu_lds (TCGv t0, TCGv t1, int flags)
+
+{
+
+    TCGv tmp = tcg_temp_new(TCG_TYPE_I32);
+
+    tcg_gen_qemu_ld32u(tmp, t1, flags);
+
+    tcg_gen_helper_1_1(helper_memory_to_s, t0, tmp);
+
+    tcg_temp_free(tmp);
+
+}

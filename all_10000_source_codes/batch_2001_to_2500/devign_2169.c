@@ -1,0 +1,55 @@
+/* 
+ * Benchmark Sample ID : devign_2169
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=05d00e953f4cc08273fbb5f795f4fdc307140108
+ */
+
+static int file_open(URLContext *h, const char *filename, int flags)
+
+{
+
+    int access;
+
+    int fd;
+
+
+
+    av_strstart(filename, "file:", &filename);
+
+
+
+    if (flags & URL_RDWR) {
+
+        access = O_CREAT | O_TRUNC | O_RDWR;
+
+    } else if (flags & URL_WRONLY) {
+
+        access = O_CREAT | O_TRUNC | O_WRONLY;
+
+    } else {
+
+        access = O_RDONLY;
+
+    }
+
+#if defined(__MINGW32__) || defined(CONFIG_OS2) || defined(__CYGWIN__)
+
+    access |= O_BINARY;
+
+#endif
+
+    fd = open(filename, access, 0666);
+
+    if (fd < 0)
+
+        return AVERROR(ENOENT);
+
+    h->priv_data = (void *)(size_t)fd;
+
+    return 0;
+
+}

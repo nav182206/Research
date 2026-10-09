@@ -1,0 +1,67 @@
+/* 
+ * Benchmark Sample ID : devign_3136
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=210b580b106fa798149e28aa13c66b325a43204e
+ */
+
+static void rtas_set_tce_bypass(sPAPREnvironment *spapr, uint32_t token,
+
+                                uint32_t nargs, target_ulong args,
+
+                                uint32_t nret, target_ulong rets)
+
+{
+
+    VIOsPAPRBus *bus = spapr->vio_bus;
+
+    VIOsPAPRDevice *dev;
+
+    uint32_t unit, enable;
+
+
+
+    if (nargs != 2) {
+
+        rtas_st(rets, 0, -3);
+
+        return;
+
+    }
+
+    unit = rtas_ld(args, 0);
+
+    enable = rtas_ld(args, 1);
+
+    dev = spapr_vio_find_by_reg(bus, unit);
+
+    if (!dev) {
+
+        rtas_st(rets, 0, -3);
+
+        return;
+
+    }
+
+
+
+    if (!dev->tcet) {
+
+        rtas_st(rets, 0, -3);
+
+        return;
+
+    }
+
+
+
+    spapr_tce_set_bypass(dev->tcet, !!enable);
+
+
+
+    rtas_st(rets, 0, 0);
+
+}

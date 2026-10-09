@@ -1,0 +1,31 @@
+/* 
+ * Benchmark Sample ID : devign_4722
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : OOP_Cpp
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=e4f4fb1eca795e36f363b4647724221e774523c1
+ */
+
+static void vfio_calxeda_xgmac_class_init(ObjectClass *klass, void *data)
+
+{
+
+    DeviceClass *dc = DEVICE_CLASS(klass);
+
+    VFIOCalxedaXgmacDeviceClass *vcxc =
+
+        VFIO_CALXEDA_XGMAC_DEVICE_CLASS(klass);
+
+    vcxc->parent_realize = dc->realize;
+
+    dc->realize = calxeda_xgmac_realize;
+
+    dc->desc = "VFIO Calxeda XGMAC";
+
+    dc->vmsd = &vfio_platform_calxeda_xgmac_vmstate;
+
+
+
+}

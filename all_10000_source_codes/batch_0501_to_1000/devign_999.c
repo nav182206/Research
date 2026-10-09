@@ -1,0 +1,67 @@
+/* 
+ * Benchmark Sample ID : devign_999
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=8df7eef3059394bd53cdf7609aac9a50a78aa030
+ */
+
+uint64_t HELPER(diag)(CPUS390XState *env, uint32_t num, uint64_t mem,
+
+                      uint64_t code)
+
+{
+
+    uint64_t r;
+
+
+
+    switch (num) {
+
+    case 0x500:
+
+        /* KVM hypercall */
+
+        r = s390_virtio_hypercall(env);
+
+        break;
+
+    case 0x44:
+
+        /* yield */
+
+        r = 0;
+
+        break;
+
+    case 0x308:
+
+        /* ipl */
+
+        r = 0;
+
+        break;
+
+    default:
+
+        r = -1;
+
+        break;
+
+    }
+
+
+
+    if (r) {
+
+        program_interrupt(env, PGM_OPERATION, ILEN_LATER_INC);
+
+    }
+
+
+
+    return r;
+
+}

@@ -1,0 +1,47 @@
+/* 
+ * Benchmark Sample ID : devign_421
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=bea60dd7679364493a0d7f5b54316c767cf894ef
+ */
+
+static void check_pointer_type_change(Notifier *notifier, void *data)
+
+{
+
+    VncState *vs = container_of(notifier, VncState, mouse_mode_notifier);
+
+    int absolute = qemu_input_is_absolute();
+
+
+
+    if (vnc_has_feature(vs, VNC_FEATURE_POINTER_TYPE_CHANGE) && vs->absolute != absolute) {
+
+        vnc_lock_output(vs);
+
+        vnc_write_u8(vs, VNC_MSG_SERVER_FRAMEBUFFER_UPDATE);
+
+        vnc_write_u8(vs, 0);
+
+        vnc_write_u16(vs, 1);
+
+        vnc_framebuffer_update(vs, absolute, 0,
+
+                               surface_width(vs->vd->ds),
+
+                               surface_height(vs->vd->ds),
+
+                               VNC_ENCODING_POINTER_TYPE_CHANGE);
+
+        vnc_unlock_output(vs);
+
+        vnc_flush(vs);
+
+    }
+
+    vs->absolute = absolute;
+
+}

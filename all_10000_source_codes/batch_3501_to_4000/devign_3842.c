@@ -1,0 +1,61 @@
+/* 
+ * Benchmark Sample ID : devign_3842
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=a9f3bb14ba8b303cf87c42b8fe7e423571176d54
+ */
+
+static int mov_skip_multiple_stsd(MOVContext *c, AVIOContext *pb,
+
+                                  int codec_tag, int format,
+
+                                  int size)
+
+{
+
+    int video_codec_id = ff_codec_get_id(ff_codec_movvideo_tags, format);
+
+
+
+    if (codec_tag &&
+
+         (codec_tag != format &&
+
+          (c->fc->video_codec_id ? video_codec_id != c->fc->video_codec_id
+
+                                 : codec_tag != MKTAG('j','p','e','g')))) {
+
+        /* Multiple fourcc, we skip JPEG. This is not correct, we should
+
+         * export it as a separate AVStream but this needs a few changes
+
+         * in the MOV demuxer, patch welcome. */
+
+
+
+        av_log(c->fc, AV_LOG_WARNING, "multiple fourcc not supported\n");
+
+        avio_skip(pb, size);
+
+        return 1;
+
+    }
+
+    if ( codec_tag == AV_RL32("avc1") ||
+
+         codec_tag == AV_RL32("hvc1") ||
+
+         codec_tag == AV_RL32("hev1")
+
+    )
+
+        av_log(c->fc, AV_LOG_WARNING, "Concatenated H.264 or H.265 might not play correctly.\n");
+
+
+
+    return 0;
+
+}

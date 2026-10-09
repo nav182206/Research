@@ -1,0 +1,27 @@
+/* 
+ * Benchmark Sample ID : devign_279
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=1181d93231e9b807965724587d363c1cfd5a1d0d
+ */
+
+static void avc_luma_mid_and_aver_dst_16x16_msa(const uint8_t *src,
+
+                                                int32_t src_stride,
+
+                                                uint8_t *dst,
+
+                                                int32_t dst_stride)
+
+{
+
+    avc_luma_mid_and_aver_dst_8w_msa(src, src_stride, dst, dst_stride, 16);
+
+    avc_luma_mid_and_aver_dst_8w_msa(src + 8, src_stride, dst + 8, dst_stride,
+
+                                     16);
+
+}

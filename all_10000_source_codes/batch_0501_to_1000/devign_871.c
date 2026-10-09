@@ -1,0 +1,51 @@
+/* 
+ * Benchmark Sample ID : devign_871
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=c488c7f649106d09df76f697adccbe6e72520b26
+ */
+
+static void bdrv_stats_iter(QObject *data, void *opaque)
+
+{
+
+    QDict *qdict;
+
+    Monitor *mon = opaque;
+
+
+
+    qdict = qobject_to_qdict(data);
+
+    monitor_printf(mon, "%s:", qdict_get_str(qdict, "device"));
+
+
+
+    qdict = qobject_to_qdict(qdict_get(qdict, "stats"));
+
+    monitor_printf(mon, " rd_bytes=%" PRId64
+
+                        " wr_bytes=%" PRId64
+
+                        " rd_operations=%" PRId64
+
+                        " wr_operations=%" PRId64
+
+                        " flush_operations=%" PRId64
+
+                        "\n",
+
+                        qdict_get_int(qdict, "rd_bytes"),
+
+                        qdict_get_int(qdict, "wr_bytes"),
+
+                        qdict_get_int(qdict, "rd_operations"),
+
+                        qdict_get_int(qdict, "wr_operations"),
+
+                        qdict_get_int(qdict, "flush_operations"));
+
+}

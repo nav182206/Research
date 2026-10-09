@@ -1,0 +1,25 @@
+/* 
+ * Benchmark Sample ID : devign_8344
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=4207117c93357347500235952ce7891688089cb1
+ */
+
+static void borzoi_init(int ram_size, int vga_ram_size, int boot_device,
+
+                DisplayState *ds, const char **fd_filename, int snapshot,
+
+                const char *kernel_filename, const char *kernel_cmdline,
+
+                const char *initrd_filename, const char *cpu_model)
+
+{
+
+    spitz_common_init(ram_size, vga_ram_size, ds, kernel_filename,
+
+                kernel_cmdline, initrd_filename, borzoi, 0x33f);
+
+}

@@ -1,0 +1,45 @@
+/* 
+ * Benchmark Sample ID : devign_9778
+ * Dataset Source      : Devign
+ * Project Origin      : FFmpeg
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : CLEAN (0)
+ * GitHub Patch Trace  : https://github.com/search?q=470de55aa17cb933a21f7e4c4015202eaba7277f
+ */
+
+static inline int check_for_slice(AVSContext *h) {
+
+    GetBitContext *gb = &h->s.gb;
+
+    int align;
+
+
+
+    if(h->mbx)
+
+        return 0;
+
+    align = (-get_bits_count(gb)) & 7;
+
+    /* check for stuffing byte */
+
+    if(!align && (show_bits(gb,8) == 0x80))
+
+        get_bits(gb,8);
+
+    if((show_bits_long(gb,24+align) & 0xFFFFFF) == 0x000001) {
+
+        skip_bits_long(gb,24+align);
+
+        h->stc = get_bits(gb,8);
+
+        decode_slice_header(h,gb);
+
+        return 1;
+
+    }
+
+    return 0;
+
+}

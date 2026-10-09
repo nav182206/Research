@@ -1,0 +1,67 @@
+/* 
+ * Benchmark Sample ID : devign_9960
+ * Dataset Source      : Devign
+ * Project Origin      : qemu
+ * Vulnerability CWE   : CWE-MemorySafety
+ * Paradigm            : Functional_C
+ * Ground Truth Label  : VULNERABLE (1)
+ * GitHub Patch Trace  : https://github.com/search?q=94fb0909645de18481cc726ee0ec9b5afa861394
+ */
+
+static int ram_load_dead(QEMUFile *f, void *opaque)
+
+{
+
+    RamDecompressState s1, *s = &s1;
+
+    uint8_t buf[10];
+
+    ram_addr_t i;
+
+
+
+    if (ram_decompress_open(s, f) < 0)
+
+        return -EINVAL;
+
+    for(i = 0; i < last_ram_offset; i+= BDRV_HASH_BLOCK_SIZE) {
+
+        if (ram_decompress_buf(s, buf, 1) < 0) {
+
+            fprintf(stderr, "Error while reading ram block header\n");
+
+            goto error;
+
+        }
+
+        if (buf[0] == 0) {
+
+            if (ram_decompress_buf(s, qemu_get_ram_ptr(i),
+
+                                   BDRV_HASH_BLOCK_SIZE) < 0) {
+
+                fprintf(stderr, "Error while reading ram block address=0x%08" PRIx64, (uint64_t)i);
+
+                goto error;
+
+            }
+
+        } else {
+
+        error:
+
+            printf("Error block header\n");
+
+            return -EINVAL;
+
+        }
+
+    }
+
+    ram_decompress_close(s);
+
+
+
+    return 0;
+
+}
