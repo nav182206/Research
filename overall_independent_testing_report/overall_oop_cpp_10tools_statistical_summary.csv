@@ -1,0 +1,11 @@
+Tool,Flagged_Count,Pass_Count,True_Positives (TP),False_Positives (FP),True_Negatives (TN),False_Negatives (FN),Precision,Recall,F1_Score,Accuracy
+Tool1_GCC,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool2_Clang,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool3_Cppcheck,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool4_Flawfinder,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool5_Memory_Auditor,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool6_AST_Structural_Auditor,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool7_Semgrep,0,1789,0,0,923,866,0.0,0.0,0.0,0.5159
+Tool8_Data-Flow_Engine,309,1480,168,141,782,698,0.5437,0.194,0.286,0.531
+Tool9_RATS,19,1770,11,8,915,855,0.5789,0.0127,0.0249,0.5176
+Tool10_Structural_AST_Engine,934,855,482,452,471,384,0.5161,0.5566,0.5356,0.5327
