@@ -1,0 +1,4 @@
+Evaluation_Model,Total_Samples,Flagged_Count,Pass_Count,TP,FP,TN,FN,Precision,Recall,F1_Score,Accuracy
+Agentic Rule Engine,10000,679,9321,383,296,5088,4233,0.5641,0.083,0.1447,0.5471
+Static Tools Ensemble (Tools 3-10),10000,1116,8884,610,506,4878,4006,0.5466,0.1321,0.2128,0.5488
+Zero-Trust Fusion (Agentic + Ensemble),10000,1586,8414,870,716,4668,3746,0.5485,0.1885,0.2806,0.5538
