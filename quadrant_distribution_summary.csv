@@ -1,0 +1,5 @@
+Quadrant_Category,Sample_Count,Percentage,True_Vulnerabilities_Detected
+Quadrant_IV (Consensus Pass),6443,64.43%,3010
+Quadrant_III (Static Ensemble Only),3309,33.09%,1494
+Quadrant_I (Consensus),176,1.76%,80
+Quadrant_II (Auditor Only),72,0.72%,32
